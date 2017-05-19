@@ -79,6 +79,8 @@ prophet <- function(df = df,
                     mcmc.samples = 0,
                     interval.width = 0.80,
                     uncertainty.samples = 1000,
+		    yearly.series.order = 10,
+		    weekly.series.order = 3,
                     fit = TRUE,
                     ...
 ) {
@@ -100,7 +102,9 @@ prophet <- function(df = df,
     holidays.prior.scale = holidays.prior.scale,
     mcmc.samples = mcmc.samples,
     interval.width = interval.width,
-    uncertainty.samples = uncertainty.samples,
+    yearly.series.order = yearly.series.order,
+    weekly.series.order = weekly.series.order,
+   uncertainty.samples = uncertainty.samples,
     start = NULL,  # This and following attributes are set during fitting
     y.scale = NULL,
     t.scale = NULL,
@@ -384,12 +388,12 @@ make_all_seasonality_features <- function(m, df) {
   if (m$yearly.seasonality) {
     seasonal.features <- cbind(
       seasonal.features,
-      make_seasonality_features(df$ds, 365.25, 10, 'yearly'))
+      make_seasonality_features(df$ds, 365.25, m$yearly.series.order, 'yearly'))
   }
   if (m$weekly.seasonality) {
     seasonal.features <- cbind(
       seasonal.features,
-      make_seasonality_features(df$ds, 7, 3, 'weekly'))
+      make_seasonality_features(df$ds, 7, m$weekly.series.order, 'weekly'))
   }
   if(!is.null(m$holidays)) {
     # A smaller prior scale will shrink holiday estimates more than seasonality
